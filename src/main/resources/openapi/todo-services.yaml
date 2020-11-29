@@ -1,0 +1,184 @@
+openapi: 3.0.1
+info:
+  title: TODO Backend Specification
+  description: >-
+    This is a TODO backend server.
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
+servers:
+  - url: 'http://localhost:8080/v1'
+tags:
+  - name: TODO Item
+    description: Your TODO Items
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+
+paths:
+  /todo:
+    post:
+      tags:
+        - TODO Item
+      summary: Add a new TODO Item to the store
+      operationId: addTODO
+      requestBody:
+        description: TODO Item that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TODO'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/TODO'
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+        - TODO Item
+      summary: List of TODO Items (optionally with name filtering)
+      description: itemName parameter can be provided to further filter item list
+      operationId: findTODO
+      parameters:
+        - name: itemName
+          in: query
+          description: TODO Item name that need to be considered for filter (a partial name can be provided)
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: Task1
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TODO'
+        '400':
+          description: Invalid text value
+          content: {}
+
+  '/todo/{id}':
+    get:
+      tags:
+        - TODO Item
+      summary: Find TODO Item by ID
+      description: Returns a single TODO Item
+      operationId: getTODOById
+      parameters:
+        - name: id
+          in: path
+          description: ID of TODO Item to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/TODO'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: TODO Item not found
+          content: {}
+    patch:
+      tags:
+        - TODO Item
+      summary: Update an existing TODO Item
+      operationId: updateTODO
+      parameters:
+        - name: id
+          in: path
+          description: ID of TODO Item that needs to be updated
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: TODO item that needs to be updated in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TODO'
+        required: true
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: TODO Item not found
+          content: {}
+        '405':
+          description: Validation exception
+          content: {}
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - TODO Item
+      summary: Deletes a TODO Item
+      operationId: deleteTODO
+      parameters:
+        - name: id
+          in: path
+          description: TODO Item id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content: {}
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: TODO Item not found
+          content: {}
+
+components:
+  schemas:
+    TODO:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: Task1
+        desc:
+          type: string
+          example: Details for the task
+        status:
+          type: string
+          description: TODO item status in the store
+          enum:
+            - done
+            - pending
+
