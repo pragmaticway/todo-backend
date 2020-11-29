@@ -102,7 +102,7 @@ paths:
         '404':
           description: TODO Item not found
           content: {}
-    patch:
+    put:
       tags:
         - TODO Item
       summary: Update an existing TODO Item
