@@ -12,4 +12,4 @@ To download the API definition in YAML use this URL:
 `http://localhost:8080/v3/api-docs.yaml`
 
 To access the Swagger UI use:
-`http://localhost:8080/swagger-ui`
+`http://localhost:8080/swagger-ui.html`
